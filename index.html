@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas 运动的小球</title>
+    <style>
+        body {
+            margin: 0;
+        }
+        canvas {
+            display: block;
+            background-color: #ccc;
+            margin-left: 100px;
+            margin-top: 50px;
+        }
+
+        /* img input */
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        // 1.0 初始化画布
+        var canvas = document.getElementById("canvas");
+        var w = 500 ;
+        var h = 500 ;
+        canvas.width =  w ;
+        canvas.height = h;
+
+        // 2.0 获取绘制图形图像的环境
+        var obj = canvas.getContext("2d");
+
+        // 3.0 绘制小圆球
+        var drawCircle = function(x,y,r,color){
+            obj.beginPath();
+            obj.fillStyle = color || "red";
+            // obj.arc(x,y,r,0,2 * Math.PI,false);
+            obj.arc(x,y,r,0,360 * Math.PI /180,false);
+            obj.fill();
+            obj.closePath();
+        }
+        // .0 测试
+        // drawCircle(100,100,50,"blue");
+        // .0 记录运动的速度
+        // var vx = 1;
+        // var vy = 1;
+
+        var x = 0;
+        var y = 0;
+        var r = 50;
+
+        // .0 随机数(指定范围的随机数)
+        var random = function(min,max){
+            return Math.floor(Math.random()*(max-min)+min);
+        }
+        // .0 改变运动速度
+        var vx = random(1,5);
+        var vy = random(5,10);
+        // 4.0 定义小球运动的函数
+        var move = function(){
+            //改变小球的位置（x,y）
+            x += vx;
+            y += vy;
+            // 粉笔擦（清空画布）
+            obj.clearRect(0,0,w,h);
+            // 判断
+            // X 轴
+            if(x > w ){
+                x = w ;
+                vx = -vx;
+            }
+
+            if(x < 0){
+                x = 0;
+                vx = Math.abs(vx);
+            }
+
+            // Y轴
+            if(y > h ){
+                y = h ;
+                vy = -vy;
+            }   
+            if(y < 0 ){
+                y = 0 ;
+                vy = Math.abs(vy);
+            }
+            // console.log(x,y,vx,vy);
+            // 绘制小球
+            drawCircle(x,y,r,"blue");
+            // 不断调用move函数
+            window.requestAnimationFrame(move);// 1s = 60次
+            // setTimeout(move,1000/60)
+        }
+        // window.requestAnimationFrame(move);
+        move();
+
+        // var f = function(){}
+        // function f1 = function(){}
+        // window.requestAnimationFrame(f);//正确的
+        // window.requestAnimationFrame(f1);//正确的
+
+
+        // var obj = {}
+        // obj.f2 = function(){}
+        // window.requestAnimationFrame(obj.f2);//错误
+        // setInterval(obj.f2,1000/60);//错误
+
+
+
+    </script>
+</body>
+</html>
+
+<script>
+    // 刚才的bug
+    var v1 = 5;
+    var x = 10 ;
+    // 一旦执行了这个判断
+    if(x >= 10){
+        x = 10;
+        v1 = -v1;// v1 是负数
+    }
+    if(x <= 0 ){
+        x = 0;
+        v1 = v1;// v1 依然是负数
+        v1 = Math.abs(v1);// 是正数
+        v1 = -v1;// // 是正数 -(-5) ==  5
+    }
+</script>
